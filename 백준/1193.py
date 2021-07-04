@@ -13,7 +13,6 @@ if i % 2 == 0:
 
     print(f'{row}/{col}')
 else:
-
     col = x - start + 1
     row = i - col + 1
 
