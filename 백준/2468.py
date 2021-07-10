@@ -11,6 +11,7 @@
     2. dfs로 안전영역 개수 비교
 """
 import sys
+from copy import deepcopy
 sys.setrecursionlimit(10 ** 6)
 input = sys.stdin.readline
 
@@ -26,26 +27,26 @@ for i in graph:
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-def dfs(x, y, h):
-    if graph[x][y] > h:
-        graph[x][y] = 0
+def dfs(area, x, y, h):
+    if x < 0 or y < 0 or x >= n or y >= n:
+        return False
+
+    if area[x][y] > h:
+        area[x][y] = 0
 
         for i in range(4):
-            nx, ny = x + dx[i], y + dy[i]
-            if nx < 0 or ny < 0 or nx >= n or ny >= n:
-                continue
-
-            dfs(nx, ny, h)
-
+            dfs(area, x + dx[i], y + dy[i], h)
         return True
+
     return False
 
 ans = 0
 for h in range(min_height, max_height):
+    area = deepcopy(graph)
     cnt = 0
     for i in range(n):
         for j in range(n):
-            if dfs(i, j, h):
+            if dfs(area, i, j, h):
                 cnt += 1
     ans = max(ans, cnt)
 
