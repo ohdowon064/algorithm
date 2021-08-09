@@ -1,37 +1,30 @@
-# bfs를 위한 queue 자료구조
-from collections import deque
-import sys
-input = sys.stdin.readline
+n = int(input())
+graph = [list(map(int, input())) for _ in range(n)]
 
-# n : 세로길이(행), m : 가로길이(열)
-n, m = map(int, input().split())
-miro = [list(map(int, input())) for _ in range(n)]
 
-# 상하좌우 이동
+apart = []
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-def bfs():
-    q = deque()
-    q.append((0, 0)) # (0, 0)에서 시작
+def dfs(x, y):
+    global count
+    if x < 0 or y < 0 or x >= n or y >= n:
+        return False
 
-    while q:
-        x, y = q.popleft()
+    if graph[x][y] == 1:
+        graph[x][y] = 0
+        count += 1
 
         for i in range(4):
-            nx, ny = x + dx[i], y + dy[i]
+            dfs(x + dx[i], y + dy[i])
+        return True
+    return False
 
-            # 행렬을 벗어나는 경우
-            if nx < 0 or ny < 0 or nx >= n or ny >= m:
-                continue
-
-            # 방문하지 않은 길이 아닌 경우 -> 벽이 거나, 이미 방문한 길
-            if miro[nx][ny] != 1:
-                continue
-
-            miro[nx][ny] = miro[x][y] + 1 # 최소 이동 칸 수 저장
-            q.append((nx, ny))
-
-    return miro[n - 1][m - 1] # (n, m)까지의 이동 칸 수 반환
-
-print(bfs())
+count = 0
+for i in range(n):
+    for j in range(n):
+        if dfs(i, j):
+            apart.append(count)
+            count = 0
+apart.sort()
+print(len(apart), *apart, sep='\n')

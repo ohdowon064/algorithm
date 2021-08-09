@@ -36,5 +36,5 @@ graph = [
 visited = [False] * 9 # 0번 노드제외 총 8개 노드
 
 dfs(graph, 1, visited) # 1번 노드를 최상위 노드로 호출
-
+print()
 dfs_with_stack(graph, 1)
