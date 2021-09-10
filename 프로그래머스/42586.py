@@ -13,24 +13,22 @@
 from math import ceil
 
 def solution(progresses, speeds):
-    job_remain = list(map(lambda x: 100 - x, progresses))
-    process_time = [ceil(job_remain[i]/speeds[i]) for i in range(len(speeds))]
+    end_days = [-((t - 100)//s) for t, s in zip(progresses, speeds)]
 
     ans = []
-    count = 1
-    max_time = process_time[0]
+    count, max_day = 1, end_days[0]
 
-    for i in range(len(process_time) - 1):
-        if max_time >= process_time[i + 1]:
+    for i in range(len(end_days) - 1):
+        if max_day >= end_days[i + 1]:
             count += 1
         else:
             ans.append(count)
-            max_time = process_time[i + 1]
-            count = 1
+            count, max_day = 1, end_days[i + 1]
     ans.append(count)
 
-    print(ans)
+    return ans
 
-progresses = [1, 2, 1]
-speeds = [98, 97, 5]
+
+progresses = [93, 30, 55]
+speeds = [1, 30, 5]
 solution(progresses, speeds)
