@@ -59,13 +59,14 @@ def solution(kakao_api: KakaoAPI):
 
 if __name__ == "__main__":
     kakao_api_1 = KakaoAPI(1)
-    solution(kakao_api_1)
-    score1 = kakao_api_1.score_api()
-    print(score1)
-
-    kakao_api_2 = KakaoAPI(2)
-    solution(kakao_api_2)
-    score2 = kakao_api_2.score_api()
-    print(score2)
+    # solution(kakao_api_1)
+    # score1 = kakao_api_1.score_api()
+    # print(score1)
+    #
+    # kakao_api_2 = KakaoAPI(2)
+    # solution(kakao_api_2)
+    # score2 = kakao_api_2.score_api()
+    # print(score2)
+    print(kakao_api_1.pos)
 
 

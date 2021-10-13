@@ -36,8 +36,8 @@ class KakaoAPI:
             for row in range(self.n)
         ]
         self.pos = {
-            self.rentals[i][j]: (i, j) for i in range(self.n)
-            for j in range(self.n)
+            self.rentals[i][j]: (i, j) for j in range(self.n)
+            for i in range(self.n)
         }
 
 
@@ -56,6 +56,10 @@ class KakaoAPI:
         return res_body["auth_key"]
 
     def locations_api(self):
+        """
+        :return:
+        현재 카카오 T 바이크 서비스 시각에 각 자전거 대여소가 보유한 자전거 수를 반환한다.
+        """
         res = requests.get(self.base_url + "/locations",
                            headers=self.headers)
         res_body = res.json()
