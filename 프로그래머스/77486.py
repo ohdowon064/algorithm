@@ -3,8 +3,6 @@
 1. 본인이 속한 라인생성
 2. 해당 라인에 for문을 돌면서 수익분배
 """
-from collections import deque
-
 
 def solution(enroll, referral, seller, amount):
     line = {person: [] for person in enroll}
