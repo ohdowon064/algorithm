@@ -1,20 +1,28 @@
 n, m, k = map(int, input().split())
-data = sorted(list(map(int, input().split())))
-first, second = data[-1], data[-2]
-result = 0
+numbers = list(map(int, input().split()))
+print(n, m, k, numbers)
+numbers.sort()
+first, second = numbers[n-1], numbers[n-2]
 
-# j = 0
-# for i in range(m):
-#     if j == k:
-#         result += second
-#         j = 0
-#         continue
-#     result += first
-#     j += 1
+# answer = 0
+# while True:
+#     for i in range(k):
+#         if m == 0:
+#             break
+#         answer += first
+#         m -= 1
 #
-# print(result)
+#     if m == 0:
+#         break
+#
+#     answer += second
+#     m -= 1
+#
+# print(answer)
 
-# O(1)
-result += (m // (k + 1) * k + m % (k + 1)) * first
-result += (m // (k + 1)) * second
-print(result)
+count = (m // (k + 1)) * k
+count += m % (k + 1)
+
+answer = count * first
+answer += (m - count) * second
+print(answer)
