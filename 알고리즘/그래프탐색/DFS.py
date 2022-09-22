@@ -1,6 +1,6 @@
 
 
-def dfs(graph: dict[list], visited: set, node: int):
+def dfs(graph, visited: set, node: int):
     visited.add(node)
     print(node, end=" ")
 
@@ -20,3 +20,26 @@ graph = {
 }
 
 dfs(graph, set(), 1)
+
+def dfs2(graph, visited, cur):
+    visited.add(cur)
+    print(cur, end=" ")
+
+    for node in graph[cur]:
+        if node not in visited:
+            dfs2(graph, visited, node)
+
+print()
+dfs2(graph, set(), 1)
+
+
+def mydfs(visited, curr):
+    visited.add(curr)
+    print(curr, end=" ")
+
+    for v in graph[curr]:
+        if v not in visited:
+            mydfs(visited, v)
+
+print()
+mydfs(set(), 1)

@@ -26,3 +26,33 @@ graph = {
 
 bfs(graph, 1)
 
+def bfs2(graph, start):
+    q = deque([start])
+    visited = set([start])
+
+    while q:
+        v = q.popleft()
+        print(v, end=" ")
+
+        for node in graph[v]:
+            if node not in visited:
+                visited.add(node)
+                q.append(node)
+print()
+bfs2(graph, 1)
+
+def mybfs(start):
+    visited = set([start])
+    q = deque([start])
+
+    while q:
+        v = q.popleft()
+        print(v, end=" ")
+
+        for node in graph[v]:
+            if node not in visited:
+                visited.add(node)
+                q.append(node)
+
+print()
+mybfs(1)
