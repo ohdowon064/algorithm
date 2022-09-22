@@ -1,20 +1,8 @@
 n, m = map(int, input().split())
-cards = []
 
-# card = -999
-# index = 0
-# for i in range(n):
-#     numbers = list(map(int, input().split()))
-#     cards.append(numbers)
-#     if min(numbers) > card:
-#         card = min(numbers)
-#         index = i
-#
-# print(min(cards[index]))
+answer = 0
+for _ in range(n):
+    min_value = min(list(map(int, input().split())))
+    answer = max(answer, min_value)
 
-card = -999
-for i in range(n):
-    numbers = list(map(int, input().split()))
-    card = max(min(numbers), card)
-
-print(card)
+print(answer)
