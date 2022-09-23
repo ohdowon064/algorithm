@@ -1,19 +1,5 @@
 from collections import deque
 
-# BFS 메서드 정의
-def bfs(graph, start, visited):
-    q = deque([start])
-    visited[start] = True
-
-    while q:
-        v = q.popleft()
-        print(v, end=' ')
-
-        for i in graph[v]:
-            if not visited[i]:
-                q.append(i)
-                visited[i] = True
-
 # 그래프 - 인접리스트
 graph = [
     [],
@@ -27,6 +13,19 @@ graph = [
     [1, 7]
 ]
 
-visited = [False] * 9
+# BFS 메서드 정의
+def bfs(graph, start):
+    q = deque([start])
+    visited = {start}
 
-bfs(graph, 1, visited)
+    while q:
+        v = q.popleft()
+        print(v, end=" ")
+
+        for i in graph[v]:
+            if i not in visited:
+                q.append(i)
+                visited.add(i)
+
+
+bfs(graph, 1)
