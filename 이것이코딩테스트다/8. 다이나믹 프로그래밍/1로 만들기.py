@@ -1,14 +1,36 @@
-x = int(input())
-d = [0] * 30001 # d[x]는 x를 1로 만드는데 걸리는 연산횟수 저장
+# n = int(input())
 
-for i in range(2, x + 1):
-    d[i] = d[i - 1] + 1
+def function(number, count):
+    result = []
+    if number and number % 5 == 0:
+        result.append((number // 5, count + 1))
+    else:
+        result.append((None, None))
+    if number and number % 3 == 0:
+        result.append((number // 3, count + 1))
+    else:
+        result.append((None, None))
+    if number and number % 2 == 0:
+        result.append((number // 2, count + 1))
+    else:
+        result.append((None, None))
+    result.append((number - 1, count + 1))
+    return result
 
-    if i % 2 == 0:
-        d[i] = min(d[i], d[i // 2] + 1)
-    if i % 3 == 0:
-        d[i] = min(d[i], d[i // 3] + 1)
-    if i % 5 == 0:
-        d[i] = min(d[i], d[i // 5] + 1)
+from collections import deque
 
-print(d[x])
+def bfs(n):
+    q = deque([])
+    q.append(function(n, 0))
+    while q:
+        data = q.popleft()
+
+        for number, count in data:
+            if not number:
+                continue
+            if number == 1:
+                return count
+            else:
+                q.append(function(number, count))
+
+print(bfs(26))
