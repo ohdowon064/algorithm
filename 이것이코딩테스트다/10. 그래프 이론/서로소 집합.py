@@ -1,10 +1,18 @@
 v, e = map(int, input().split())
 parent_table = [i for i in range(v + 1)]
 
+
 def find_root(x):
     if parent_table[x] != x:
         return find_root(parent_table[x])
     return x
+
+
+def improved_find_root(x):
+    if parent_table[x] != x:
+        parent_table[x] = find_root(parent_table[x])
+    return parent_table[x]
+
 
 def union_root(a, b):
     a_root = find_root(a)
@@ -22,8 +30,7 @@ for i in range(e):
 
 print("각 원소가 속한 집합: ", end=" ")
 for i in range(1, v + 1):
-    print(find_root(i), end=" ")
-
+    print(improved_find_root(i), end=" ")
 print()
 
 print("부모 테이블:", end=" ")
