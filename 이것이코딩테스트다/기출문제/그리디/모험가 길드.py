@@ -1,14 +1,20 @@
+"""
+입력값
+5
+2 3 1 2 2
+"""
 n = int(input())
 mans = list(map(int, input().split()))
 mans.sort()
 
-count = 0
 i = 0
-while True:
-    if len(mans[i: i + mans[i]]) >= max(mans[i: i + mans[i]]):
-        count += 1
-    if i + mans[i] >= n:
-        break
-    i = i + mans[i]
+result = 0
+while i < n:
+    team = mans[i: i+mans[i]]
+    if len(team) >= max(team):
+        result += 1
+    i += mans[i]
 
-print(count)
+print(result)
+
+
