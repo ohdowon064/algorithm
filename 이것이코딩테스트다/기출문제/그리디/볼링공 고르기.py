@@ -7,10 +7,16 @@ input
 8 5
 1 5 4 3 2 4 5 2
 """
-from itertools import combinations
 n, m = map(int, input().split())
 balls = list(map(int, input().split()))
-indexes = [i for i in range(n)]
 
-cases = list(filter(lambda x: balls[x[0]] != balls[x[1]], combinations(indexes, 2)))
-print(len(cases))
+weights = [0] * 11
+for ball in balls:
+    weights[ball] += 1
+
+result = 0
+for i in range(1, m + 1):
+    n -= weights[i]
+    result += weights[i] * n
+
+print(result)
