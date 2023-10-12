@@ -85,7 +85,10 @@ def oid_test(p_name):
 
 
 if __name__ == "__main__":
-    for i in range(4):
-        p = Process(target=oid_test, args=(f"p{i + 1}",))
-        p.start()
-        p.join()
+    for _ in range(100):
+        print(ObjectID())
+
+    # for i in range(4):
+    #     p = Process(target=oid_test, args=(f"p{i + 1}",))
+    #     p.start()
+    #     p.join()

@@ -21,6 +21,13 @@ def dfs(graph, v, visited):
         if i not in visited:
             dfs(graph, i, visited)
 
+def dfs2(graph, start, visited):
+    visited.add(start)
+    print(start, end=" ")
+    for i in graph[start]:
+        if i not in visited:
+            dfs(graph, i, visited)
+
 def dfs_with_stack(graph, v):
     visited = [False] * 9
     stack = [v]
@@ -32,6 +39,17 @@ def dfs_with_stack(graph, v):
             visited[_v] = True
             print(_v, end=" ")
             stack.extend(reversed(graph[_v]))
+
+def dfs3(graph, start):
+    visited = set()
+    stack = [start]
+
+    while stack:
+        this = stack.pop()
+        if this not in visited:
+            visited.add(this)
+            print(this, end=" ")
+            stack.extend(reversed(graph[this]))
 
 dfs(graph, 1, visited)
 print()

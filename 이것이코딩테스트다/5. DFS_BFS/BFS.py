@@ -27,5 +27,17 @@ def bfs(graph, start):
                 q.append(i)
                 visited.add(i)
 
+def bfs2(graph, start):
+    q = deque([start])
+    visited = {start}
+
+    while q:
+        v = q.popleft()
+        print(v, end=" ")
+        for i in graph[v]:
+            if i not in visited:
+                q.append(i)
+                visited.add(i)
+
 
 bfs(graph, 1)
