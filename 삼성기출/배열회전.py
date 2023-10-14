@@ -28,3 +28,13 @@ def rotate_sublist(board, xr, xc, yr, yc):
     return board
 pprint(myboard)
 pprint(rotate_sublist(myboard, 1, 1, 3, 3))
+
+
+def transpose():
+    return list(map(list, zip(*board)))
+
+def rotate():
+    return list(map(list, zip(*board[::-1])))
+
+def rotate_counterclockwise():
+    return list(map(list, zip(*board)))[::-1]
