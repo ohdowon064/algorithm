@@ -1,140 +1,120 @@
 from collections import deque
-from pprint import pprint
 
 n, m, k = map(int, input().split())
-board = [list(map(int, input().split())) for _ in range(n)]
-# 우하좌상
-direction_for_lazer = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-direction_for_bomb = [(0, 1), (1, 0), (0, -1), (-1, 0), (-1, 1), (1, 1), (1, -1), (-1, -1)]
-attack_order = []
+board = [
+    list(map(int, input().split()))
+    for _ in range(n)
+]
 
-def attacker_and_defender():
-    max_value = float('-inf')
-    min_value = float('inf')
-    attack_candidates = []
-    defend_candidates = []
-    for i in range(n):
-        for j in range(m):
-            if board[i][j] == 0:
-                continue
-
-            if board[i][j] > max_value:
-                max_value = board[i][j]
-                defend_candidates = [(i, j)]
-            elif board[i][j] == max_value:
-                defend_candidates.append((i, j))
-
-            if board[i][j] < min_value:
-                min_value = board[i][j]
-                attack_candidates = [(i, j)]
-            elif board[i][j] == min_value:
-                attack_candidates.append((i, j))
-
-    for attacker in attack_order[::-1]:
-        if attacker in attack_candidates:
-            min_r, min_c = attacker
-            break
-    else:
-        attack_candidates.sort(key=lambda x: (-(x[0] + x[1]), -x[1]))
-        min_r, min_c = attack_candidates[0]
-
-    not_attacker_candidates = list(filter(lambda x: x not in attack_order, defend_candidates))
-    if not_attacker_candidates:
-        not_attacker_candidates.sort(key=lambda x: (x[0] + x[1], x[1]))
-        max_r, max_c = not_attacker_candidates[0]
-    else:
-        for attacker in attack_order:
-            if attacker in defend_candidates:
-                max_r, max_c = attacker
-                break
-
-    board[min_r][min_c] += n + m
-    return min_r, min_c, max_r, max_c
+records = [[0] * m for _ in range(n)]
+in_war = [[False] * m for _ in range(n)]
+live_turret = []
+direction_for_laser = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+direction_for_bomb = [(0, 0), (0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+turn = 0
 
 
-def get_adjacent_for_lazer(node):
-    adjacent_nodes = []
-    for dx, dy in direction_for_lazer:
-        nx, ny = (node[0] + dx) % n, (node[1] + dy) % m
-        adjacent_nodes.append((nx, ny))
+class Turret:
+    def __init__(self, x, y, record, power):
+        self.x = x
+        self.y = y
+        self.record = record
+        self.power = power
 
-    return adjacent_nodes
 
-def _lazer(start, end):
-    visited = {start}
+def select_attacker():
+    live_turret.sort(key=lambda x: (x.power, -x.record, -(x.x + x.y), -x.y))
+    weak_turret = live_turret[0]
+    attack_x, attack_y = weak_turret.x, weak_turret.y
+    board[attack_x][attack_y] += n + m
+    records[attack_x][attack_y] = turn
+    weak_turret.power = board[attack_x][attack_y]
+    weak_turret.record = records[attack_x][attack_y]
+    in_war[attack_x][attack_y] = True
+    live_turret[0] = weak_turret
+
+
+def laser_attack():
+    attacker = live_turret[0]
+    defender = live_turret[-1]
+    sx, sy = attacker.x, attacker.y
+    power = attacker.power
+    ex, ey = defender.x, defender.y
+
     q = deque()
-    q.append((start, []))
+    q.append((sx, sy, []))
+    visited = {(sx, sy)}
+    path = []
 
     while q:
-        pos, path = q.popleft()
-        if pos == end:
-            return path
+        x, y, current_path = q.popleft()
+        if x == ex and y == ey:
+            path = current_path
+            break
 
-        for adj in get_adjacent_for_lazer(pos):
-            if board[adj[0]][adj[1]] == 0 or adj in visited:
+        for dx, dy in direction_for_laser:
+            nx, ny = (x + dx) % n, (y + dy) % m
+
+            if board[nx][ny] == 0 or (nx, ny) in visited:
                 continue
-            q.append((adj, path + [adj]))
-            visited.add(adj)
 
-    return None
+            visited.add((nx, ny))
+            q.append((nx, ny, current_path + [(nx, ny)]))
+
+    if path:
+        for x, y in path:
+            if x == ex and y == ey:
+                board[x][y] = max(0, board[x][y] - power)
+            else:
+                board[x][y] = max(0, board[x][y] - power // 2)
+            in_war[x][y] = True
+
+    return bool(path)
 
 
-def lazer(attack_r, attack_c, defend_r, defend_c):
-    path = _lazer((attack_r, attack_c), (defend_r, defend_c))
-    if path is None:
-        return None
-    power = board[attack_r][attack_c]
-    for x, y in path[:-1]:
-        board[x][y] = max(0, board[x][y] - power // 2)
-    board[defend_r][defend_c] = max(0, board[defend_r][defend_c] - power)
-    return path[:-1]
+def bomb_attack():
+    attacker = live_turret[0]
+    defender = live_turret[-1]
+    sx, sy = attacker.x, attacker.y
+    power = attacker.power
+    ex, ey = defender.x, defender.y
 
-def get_adjacent_for_bomb(node):
-    adjacent_nodes = []
     for dx, dy in direction_for_bomb:
-        nx, ny = (node[0] + dx) % n, (node[0] + dy) % m
-        adjacent_nodes.append((nx, ny))
-
-    return adjacent_nodes
-
-
-def bomb(attack_r, attack_c, defend_r, defend_c):
-    power = board[attack_r][attack_c]
-    participants = []
-    for adj in get_adjacent_for_bomb((defend_r, defend_c)):
-        if board[adj[0]][adj[1]] == 0 or adj == (attack_r, attack_c):
+        nx, ny = (ex + dx) % n, (ey + dy) % m
+        if board[nx][ny] == 0 or (nx == sx and ny == sy):
             continue
-        elif adj == (defend_r, defend_c):
-            board[adj[0]][adj[1]] = max(0, board[adj[0]][adj[1]] - power)
+        if nx == ex and ny == ey:
+            board[nx][ny] = max(0, board[nx][ny] - power)
         else:
-            participants.append(adj)
-            board[adj[0]][adj[1]] = max(0, board[adj[0]][adj[1]] - power // 2)
+            board[nx][ny] = max(0, board[nx][ny] - power // 2)
+        in_war[nx][ny] = True
 
-    return participants
 
-def repair(participants):
-    participants = set(participants)
+def repair():
     for i in range(n):
         for j in range(m):
-            if board[i][j] == 0 or (i, j) in participants:
-                continue
-            board[i][j] += 1
+            if board[i][j] > 0 and not in_war[i][j]:
+                board[i][j] += 1
 
-def step():
-    attack_r, attack_c, defend_r, defend_c = attacker_and_defender()
-    if (attack_r, attack_c) == (defend_r, defend_c):
-        return True
-    attack_order.append((attack_r, attack_c))
-    participants = lazer(attack_r, attack_c, defend_r, defend_c)
-    if participants is None:
-        participants = bomb(attack_r, attack_c, defend_r, defend_c)
-    participants += [(attack_r, attack_c), (defend_r, defend_c)]
-    repair(participants)
-    return False
 
 for _ in range(k):
-    end = step()
-    if end:
+    live_turret = []
+    for i in range(n):
+        for j in range(m):
+            if board[i][j]:
+                live_turret.append(
+                    Turret(i, j, records[i][j], board[i][j])
+                )
+
+    if len(live_turret) <= 1:
         break
+
+    turn += 1
+    in_war = [[False] * m for _ in range(n)]
+
+    select_attacker()
+    if not laser_attack():
+        bomb_attack()
+    repair()
 
 print(max([max(row) for row in board]))
