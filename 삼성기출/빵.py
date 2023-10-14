@@ -8,7 +8,6 @@ board = [
 stores = [tuple(map(lambda x: int(x) - 1, input().split())) for _ in range(m)]
 banned_area = set()
 direction = [(-1, 0), (0, -1), (0, 1), (1, 0)]
-temp_banned_area = set()
 t = 0
 basecamp_set = {(i, j) for i in range(n) for j in range(n) if board[i][j] == 1}
 
@@ -23,20 +22,20 @@ class Person:
         self.basecamp = basecamp
         self.store = store
 
-    def __repr__(self):
-        print(f'======{self.i}번째=====')
-        print(f"현재 좌표: ({self.x}, {self.y})")
-        print(f"베이스캠프: {self.basecamp}")
-        print(f"편의점: {self.store}")
-        print("=============")
-        return "\n"
+    # def __repr__(self):
+    #     print(f'======{self.i}번째=====')
+    #     print(f"현재 좌표: ({self.x}, {self.y})")
+    #     print(f"베이스캠프: {self.basecamp}")
+    #     print(f"편의점: {self.store}")
+    #     print("=============")
+    #     return "\n"
 
 
 
-people: list[Person] = []
-for i in range(m):
-    person = Person(i + 1, -1, -1, (-1, -1), stores[i])
-    people.append(person)
+people: list[Person] = [
+    Person(i + 1, -1, -1, (-1, -1), stores[i])
+    for i in range(m)
+]
 
 def find_my_basecamp(p: Person):
     basecamp_candidates = []
@@ -68,7 +67,7 @@ def out_of_range(x, y):
     return x < 0 or x >= n or y < 0 or y >= n
 
 def step1(p: Person):
-    if out_of_range(p.x, p.y):
+    if out_of_range(p.x, p.y) or t <= p.i:
         return p
 
     for dx, dy in direction:
@@ -81,15 +80,15 @@ def step1(p: Person):
 
 def step2(p: Person):
     if (p.x, p.y) == p.store and (p.x, p.y) not in banned_area:
-        temp_banned_area.add(p.store)
+        banned_area.add(p.store)
     return p
 
 def step3(p: Person):
-    if out_of_range(p.x, p.y) and t >= p.i:
+    if out_of_range(p.x, p.y) and t <= p.i:
         p = find_my_basecamp(p)
         basecamp_set.discard(p.basecamp)
         p.x, p.y = p.basecamp
-        temp_banned_area.add(p.basecamp)
+        banned_area.add(p.basecamp)
     return p
 
 
@@ -99,20 +98,17 @@ while True:
     all_out = True
     for i in range(m):
         people[i] = step1(people[i])
+
+    for i in range(m):
         people[i] = step2(people[i])
-        people[i] = step3(people[i])
-
-
 
         if (people[i].x, people[i].y) != people[i].store:
             all_out = False
+
+    for i in range(m):
+        people[i] = step3(people[i])
+
         # print(people[i])
-    banned_area |= temp_banned_area
-    temp_banned_area = set()
-
-
-
-
 
     if all_out:
         break
