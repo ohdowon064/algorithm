@@ -29,3 +29,19 @@ def bfs(r, c):
             do_something(nr, nc)
             visited.add((nr, nc))
             q.append((nr, nc))
+
+
+def bfs2(r, c):
+    q = deque()
+    visited = {(r, c)}
+    q.append((r, c))
+
+    while q:
+        r, c = q.popleft()
+
+        for d in range(4):
+            nr, nc = r + dr[d], c + dc[d]
+            if out_of_range(nr, nc) or (nr, nc) in visited:
+                continue
+            visited.add((nr, nc))
+            q.append((nr, nc))

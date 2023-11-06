@@ -11,14 +11,10 @@ def out_of_range(r, c):
     return r < 0 or r >= n or c < 0 or c >= n
 
 def spiral_move():
-    # 시작 좌표
     r = c = n // 2
-    # 시작방향
-    d = 0
-    # 이동 카운트
-    move_count = 0
-    # 이동 거리
     dist = 1
+    move_count = 0
+    d = 0
 
     while True:
         move_count += 1
